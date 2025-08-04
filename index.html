@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN" class="scroll-smooth">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,6 +26,32 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+        /* 激活导航链接的样式 */
+        .nav-link.active {
+            color: #1d4ed8; /* Tailwind's text-blue-700 */
+            font-weight: 700;
+        }
+        /* 首页背景幻灯片样式 */
+        #hero-section {
+            background-size: cover;
+            background-position: center;
+            /* 关键：为背景图片的切换添加平滑的过渡效果 */
+            transition: background-image 1.5s ease-in-out;
+        }
+        /* 定义动态进入的动画 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 1.5s ease-out forwards;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -34,19 +60,16 @@
     <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
         <div class="container mx-auto px-6 py-3 flex justify-between items-center">
             <!-- Logo 和俱乐部名称 -->
-            <a href="#home" class="flex items-center space-x-3">
-                <svg class="h-10 w-10 text-blue-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.5 4.5 0 0 0 2.25 15Z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                </svg>
+            <a href="#home" class="flex items-center space-x-3 nav-link">
+                <img src="https://i.postimg.cc/430JG1Ct/image.png" alt="弈峰Logo" class="h-10 w-10">
                 <span class="text-xl font-bold text-gray-800">“弈峰”棋牌俱乐部</span>
             </a>
             <!-- 导航链接 -->
             <nav class="hidden md:flex space-x-8">
-                <a href="#home" class="text-gray-600 hover:text-blue-700 font-medium transition duration-300">首页</a>
-                <a href="#about" class="text-gray-600 hover:text-blue-700 font-medium transition duration-300">俱乐部介绍</a>
-                <a href="#calendar" class="text-gray-600 hover:text-blue-700 font-medium transition duration-300">活动日历</a>
-                <a href="#members" class="text-gray-600 hover:text-blue-700 font-medium transition duration-300">俱乐部会员</a>
+                <a href="#home" class="nav-link text-gray-600 hover:text-blue-700 font-medium transition duration-300">首页</a>
+                <a href="#about" class="nav-link text-gray-600 hover:text-blue-700 font-medium transition duration-300">俱乐部介绍</a>
+                <a href="#calendar" class="nav-link text-gray-600 hover:text-blue-700 font-medium transition duration-300">活动日历</a>
+                <a href="#members" class="nav-link text-gray-600 hover:text-blue-700 font-medium transition duration-300">俱乐部会员</a>
             </nav>
             <!-- 移动端菜单按钮 -->
             <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-600 hover:bg-gray-200">
@@ -56,224 +79,331 @@
             </button>
         </div>
         <!-- 移动端菜单 -->
-        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
-            <a href="#home" class="block py-2 text-gray-600 hover:text-blue-700">首页</a>
-            <a href="#about" class="block py-2 text-gray-600 hover:text-blue-700">俱乐部介绍</a>
-            <a href="#calendar" class="block py-2 text-gray-600 hover:text-blue-700">活动日历</a>
-            <a href="#members" class="block py-2 text-gray-600 hover:text-blue-700">俱乐部会员</a>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 bg-white border-t">
+            <a href="#home" class="nav-link block py-2 text-gray-600 hover:text-blue-700">首页</a>
+            <a href="#about" class="nav-link block py-2 text-gray-600 hover:text-blue-700">俱乐部介绍</a>
+            <a href="#calendar" class="nav-link block py-2 text-gray-600 hover:text-blue-700">活动日历</a>
+            <a href="#members" class="nav-link block py-2 text-gray-600 hover:text-blue-700">俱乐部会员</a>
         </div>
     </header>
 
-    <main class="container mx-auto px-6 py-8">
+    <main>
 
         <!-- 首页 Section -->
-        <section id="home" class="pt-16 -mt-16">
-            <div class="text-center mb-12">
-                <h1 class="text-4xl md:text-5xl font-bold text-blue-800">弈无止境,勇攀高峰</h1>
-                <p class="text-lg text-gray-600 mt-4">欢迎来到国防科技大学“弈峰”棋牌俱乐部</p>
-            </div>
+        <section id="home" class="content-section">
+            <!-- Hero Section with Background Slideshow -->
+            <div id="hero-section" class="relative min-h-screen flex flex-col items-center justify-center text-center text-white">
+                <!-- Dark Overlay -->
+                <div class="absolute inset-0 bg-black/50"></div>
+                
+                <!-- Slideshow Controls -->
+                <button id="prev-slide-btn" class="absolute top-1/2 left-4 z-20 -translate-y-1/2 p-2 rounded-full bg-black/30 hover:bg-black/50 transition">
+                    <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                    </svg>
+                </button>
+                <button id="next-slide-btn" class="absolute top-1/2 right-4 z-20 -translate-y-1/2 p-2 rounded-full bg-black/30 hover:bg-black/50 transition">
+                    <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                    </svg>
+                </button>
 
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- 近期活动 -->
-                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
-                    <h3 class="text-2xl font-bold mb-4 border-l-4 border-blue-600 pl-4">近期活动</h3>
-                    <div class="space-y-4">
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <p class="font-semibold">“迎新杯”棋牌大赛</p>
-                            <p class="text-sm text-gray-500">时间：2025年9月15日</p>
-                            <p class="text-sm text-gray-500">地点：活动中心201室</p>
-                        </div>
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <p class="font-semibold">周末常规对弈</p>
-                            <p class="text-sm text-gray-500">时间：每周六下午</p>
-                            <p class="text-sm text-gray-500">地点：学员活动中心棋牌室</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 所获荣誉 -->
-                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
-                    <h3 class="text-2xl font-bold mb-4 border-l-4 border-green-600 pl-4">所获荣誉</h3>
-                    <ul class="list-disc list-inside space-y-2 text-gray-700">
-                        <li>第六届“星辰杯”湖南省大学生象棋团体锦标赛冠军</li>
-                        <li>第五届“墨子杯”全国兵棋推演大赛一等奖</li>
-                        <li>全国大学生智力运动会围棋团体季军</li>
-                        <li>多届“弈峰杯”校园棋王赛成功举办</li>
-                    </ul>
-                </div>
-
-                <!-- 近期新闻 -->
-                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
-                    <h3 class="text-2xl font-bold mb-4 border-l-4 border-orange-500 pl-4">近期新闻</h3>
-                    <div class="space-y-3">
-                        <a href="#" class="block hover:text-blue-700">俱乐部2025年度纳新活动圆满结束</a>
-                        <a href="#" class="block hover:text-blue-700">我校学子在省级象棋比赛中再创佳绩</a>
-                        <a href="#" class="block hover:text-blue-700">“弈峰”俱乐部与兄弟院校开展线上友谊赛</a>
+                <!-- Content -->
+                <div class="relative z-10 px-4 pb-20 animate-fade-in-up">
+                    <h1 class="text-4xl md:text-6xl font-bold">弈无止境,勇攀高峰</h1>
+                    <p class="text-lg md:text-xl mt-4 mb-8">欢迎来到国防科技大学“弈峰”棋牌俱乐部</p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <button id="join-now-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full transition duration-300 shadow-lg">
+                            立即加入
+                        </button>
+                        <button id="view-activities-btn" class="bg-transparent border-2 border-white hover:bg-white hover:text-black text-white font-bold py-3 px-8 rounded-full transition duration-300 shadow-lg">
+                            查看活动
+                        </button>
                     </div>
                 </div>
             </div>
-        </section>
 
-        <!-- 分隔线 -->
-        <hr class="my-16 border-gray-200">
-
-        <!-- 俱乐部介绍 Section -->
-        <section id="about" class="pt-16 -mt-16">
-            <h2 class="text-3xl font-bold text-center mb-12">关于我们</h2>
-            <div class="bg-white p-8 rounded-xl shadow-lg">
-                <div class="grid md:grid-cols-3 gap-8 text-gray-700">
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-blue-800">我们的历史</h4>
-                        <p>“弈峰”棋牌俱乐部成立于2010年，由一群热爱棋牌的学员自发组织。十余年来，我们从一个小小的兴趣小组发展成为校园内最具影响力的社团之一，始终致力于推广棋牌文化，为广大师生提供一个切磋交流的平台。</p>
-                    </div>
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-blue-800">我们的团队</h4>
-                        <p>俱乐部设主席团、象棋部、围棋部、综合部等，拥有一支经验丰富、充满热情的管理团队。我们定期邀请校内外高手进行指导，组织各类活动，旨在为会员提供最专业的训练和最有趣的交流体验。</p>
-                    </div>
-                    <div>
-                        <h4 class="text-xl font-semibold mb-3 text-blue-800">我们的成就</h4>
-                        <p>在各级赛事中，俱乐部成员屡创佳绩，为学校赢得了诸多荣誉。我们不仅在省级比赛中多次夺冠，在全国大赛的舞台上也展现了科大学子的风采。一年一度的“弈峰杯”更是校园内的品牌文化活动。</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 分隔线 -->
-        <hr class="my-16 border-gray-200">
-
-        <!-- 活动日历 Section -->
-        <section id="calendar" class="pt-16 -mt-16">
-            <h2 class="text-3xl font-bold text-center mb-12">活动日历</h2>
-            <div class="space-y-6">
-                <!-- 活动项 1 -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <div class="p-6 flex justify-between items-center cursor-pointer event-toggle">
-                        <div>
-                            <h4 class="text-xl font-bold text-blue-800">周末对弈</h4>
-                            <p class="text-gray-500">每周六、日下午 14:30 - 17:30 @ 学员活动中心棋牌室</p>
+            <!-- Scrollable Content -->
+            <div class="container mx-auto px-6 py-16">
+                 <div class="space-y-8 max-w-4xl mx-auto">
+                    <!-- 近期活动 -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                        <h3 class="text-2xl font-bold mb-4 border-l-4 border-blue-600 pl-4">近期活动</h3>
+                        <div class="space-y-4">
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <p class="font-semibold">“迎新杯”棋牌大赛</p>
+                                <p class="text-sm text-gray-500">时间：2025年9月15日</p>
+                                <p class="text-sm text-gray-500">地点：活动中心201室</p>
+                            </div>
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <p class="font-semibold">周末常规对弈</p>
+                                <p class="text-sm text-gray-500">时间：每周六下午</p>
+                                <p class="text-sm text-gray-500">地点：学员活动中心棋牌室</p>
+                            </div>
                         </div>
-                        <svg class="h-6 w-6 transition-transform transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
                     </div>
-                    <div class="event-details hidden px-6 pb-6 border-t border-gray-200">
-                        <p class="mt-4 text-gray-700">自由对弈，无需报名，欢迎各位棋友前来交流。现场提供象棋、围棋、国际象棋等多种棋具。无论你是初学者还是资深棋手，都能在这里找到棋逢对手的乐趣。</p>
-                    </div>
-                </div>
-                <!-- 活动项 2 -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <div class="p-6 flex justify-between items-center cursor-pointer event-toggle">
-                        <div>
-                            <h4 class="text-xl font-bold text-blue-800">指导棋活动</h4>
-                            <p class="text-gray-500">每月最后一个周五晚上 19:00 - 21:00 @ 图书馆研讨室</p>
+
+                    <!-- 近期新闻 -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                        <h3 class="text-2xl font-bold mb-4 border-l-4 border-orange-500 pl-4">近期新闻</h3>
+                        <div class="space-y-3">
+                            <a href="#" class="block hover:text-blue-700">俱乐部2025年度纳新活动圆满结束</a>
+                            <a href="#" class="block hover:text-blue-700">我校学子在省级象棋比赛中再创佳绩</a>
+                            <a href="#" class="block hover:text-blue-700">“弈峰”俱乐部与兄弟院校开展线上友谊赛</a>
                         </div>
-                        <svg class="h-6 w-6 transition-transform transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
                     </div>
-                    <div class="event-details hidden px-6 pb-6 border-t border-gray-200">
-                        <p class="mt-4 text-gray-700">俱乐部将邀请校内外知名棋手，为会员提供1对多的指导棋，进行复盘讲解，帮助大家快速提升棋力。活动名额有限，需在俱乐部群内提前报名。</p>
-                    </div>
-                </div>
-                <!-- 活动项 3 -->
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <div class="p-6 flex justify-between items-center cursor-pointer event-toggle">
-                        <div>
-                            <h4 class="text-xl font-bold text-blue-800">“弈峰杯”校园棋王争霸赛</h4>
-                            <p class="text-gray-500">每年11月 @ 具体地点待通知</p>
-                        </div>
-                        <svg class="h-6 w-6 transition-transform transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
-                    </div>
-                    <div class="event-details hidden px-6 pb-6 border-t border-gray-200">
-                        <p class="mt-4 text-gray-700">这是俱乐部年度最盛大的赛事，面向全校师生，分为象棋组、围棋组和国际象棋组。比赛将决出本年度的校园棋王，并有丰厚奖品！敬请期待后续通知。</p>
+                    
+                    <!-- 所获荣誉 -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                        <h3 class="text-2xl font-bold mb-4 border-l-4 border-green-600 pl-4">所获荣誉</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li>第六届“星辰杯”湖南省大学生象棋团体锦标赛冠军</li>
+                            <li>第五届“墨子杯”全国兵棋推演大赛一等奖</li>
+                            <li>全国大学生智力运动会围棋团体季军</li>
+                            <li>多届“弈峰杯”校园棋王赛成功举办</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 分隔线 -->
-        <hr class="my-16 border-gray-200">
-
-        <!-- 俱乐部会员 Section -->
-        <section id="members" class="pt-16 -mt-16">
-            <h2 class="text-3xl font-bold text-center mb-12">俱乐部会员</h2>
-            
-            <!-- 指导老师和骨干成员 -->
-            <div class="mb-12">
-                <h3 class="text-2xl font-bold mb-6 text-center">核心团队</h3>
-                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <!-- 指导老师 -->
-                    <div class="text-center bg-white p-6 rounded-xl shadow-lg">
-                        <img class="w-24 h-24 rounded-full mx-auto mb-4" src="https://placehold.co/100x100/a0aec0/ffffff?text=师" alt="指导老师头像">
-                        <h4 class="text-xl font-semibold">于雷</h4>
-                        <p class="text-blue-700 font-medium">指导老师</p>
-                        <p class="text-sm text-gray-500 mt-2">电子科学学院讲师。</p>
-                    </div>
-                    <!-- 骨干成员 -->
-                    <div class="text-center bg-white p-6 rounded-xl shadow-lg">
-                        <img class="w-24 h-24 rounded-full mx-auto mb-4" src="https://placehold.co/100x100/a0aec0/ffffff?text=张" alt="主席头像">
-                        <h4 class="text-xl font-semibold">张一娄</h4>
-                        <p class="text-blue-700 font-medium">俱乐部主任</p>
-                        <p class="text-sm text-gray-500 mt-2">理学院20级本科生，计算机学院24级研究生。</p>
-                    </div>
-                    <div class="text-center bg-white p-6 rounded-xl shadow-lg">
-                        <img class="w-24 h-24 rounded-full mx-auto mb-4" src="https://placehold.co/100x100/a0aec0/ffffff?text=金" alt="副主席头像">
-                        <h4 class="text-xl font-semibold">纪大威</h4>
-                        <p class="text-blue-700 font-medium">副主任 | 象棋分部部长</p>
-                        <p class="text-sm text-gray-500 mt-2">计算机学院22级本科生。</p>
-                    </div>
-                    <div class="text-center bg-white p-6 rounded-xl shadow-lg">
-                        <img class="w-24 h-24 rounded-full mx-auto mb-4" src="https://placehold.co/100x100/a0aec0/ffffff?text=李" alt="围棋部长头像">
-                        <h4 class="text-xl font-semibold">汪天雄</h4>
-                        <p class="text-blue-700 font-medium">副主任 | 围棋分部部长</p>
-                        <p class="text-sm text-gray-500 mt-2">电子科学学院22级本科生。</p>
+        <!-- 俱乐部介绍 Section (默认隐藏) -->
+        <section id="about" class="content-section hidden py-8">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center mb-12">关于我们</h2>
+                <div class="bg-white p-8 rounded-xl shadow-lg max-w-4xl mx-auto">
+                    <div class="space-y-8 text-gray-700">
+                        <div>
+                            <h4 class="text-xl font-semibold mb-3 text-blue-800">我们的历史</h4>
+                            <p>“弈峰”棋牌俱乐部成立于2010年，由一群热爱棋牌的学员自发组织。十余年来，我们从一个小小的兴趣小组发展成为校园内最具影响力的社团之一，始终致力于推广棋牌文化，为广大师生提供一个切磋交流的平台。</p>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-semibold mb-3 text-blue-800">我们的团队</h4>
+                            <p>俱乐部设主席团、象棋部、围棋部、综合部等，拥有一支经验丰富、充满热情的管理团队。我们定期邀请校内外高手进行指导，组织各类活动，旨在为会员提供最专业的训练和最有趣的交流体验。</p>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-semibold mb-3 text-blue-800">我们的成就</h4>
+                            <p>在各级赛事中，俱乐部成员屡创佳绩，为学校赢得了诸多荣誉。我们不仅在省级比赛中多次夺冠，在全国大赛的舞台上也展现了科大学子的风采。一年一度的“弈峰杯”更是校园内的品牌文化活动。</p>
+                        </div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- 会员列表 -->
-            <div>
-                <h3 class="text-2xl font-bold mb-6 text-center">会员风采</h3>
-                <div class="bg-white rounded-xl shadow-lg overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead class="bg-gray-100">
-                            <tr>
-                                <th class="p-4 font-semibold">姓名</th>
-                                <th class="p-4 font-semibold">学院</th>
-                                <th class="p-4 font-semibold">擅长项目</th>
-                                <th class="p-4 font-semibold">简介</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200">
-                            <tr>
-                                <td class="p-4">赵大</td>
-                                <td class="p-4">电子科学学院</td>
-                                <td class="p-4">象棋</td>
-                                <td class="p-4 text-sm text-gray-600">布局犀利，中盘稳健</td>
-                            </tr>
-                            <tr>
-                                <td class="p-4">钱二</td>
-                                <td class="p-4">空天科学学院</td>
-                                <td class="p-4">围棋</td>
-                                <td class="p-4 text-sm text-gray-600">喜爱实地，官子细腻</td>
-                            </tr>
-                            <tr>
-                                <td class="p-4">孙三</td>
-                                <td class="p-4">理学院</td>
-                                <td class="p-4">国际象棋</td>
-                                <td class="p-4 text-sm text-gray-600">擅长西西里防御</td>
-                            </tr>
-                            <tr>
-                                <td class="p-4">周四</td>
-                                <td class="p-4">材料科学学院</td>
-                                <td class="p-4">象棋</td>
-                                <td class="p-4 text-sm text-gray-600">棋风刚猛，善于对攻</td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <!-- 活动日历 Section (默认隐藏) -->
+        <section id="calendar" class="content-section hidden py-8">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center mb-12">活动日历</h2>
+                <div class="space-y-6 max-w-4xl mx-auto">
+                    <!-- 活动项 1 -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                        <div class="p-6 flex justify-between items-center cursor-pointer event-toggle">
+                            <div>
+                                <h4 class="text-xl font-bold text-blue-800">周末对弈</h4>
+                                <p class="text-gray-500">每周六、日下午 14:30 - 17:30 @ 学员活动中心棋牌室</p>
+                            </div>
+                            <svg class="h-6 w-6 transition-transform transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
+                        </div>
+                        <div class="event-details hidden px-6 pb-6 border-t border-gray-200">
+                            <p class="mt-4 text-gray-700">自由对弈，无需报名，欢迎各位棋友前来交流。现场提供象棋、围棋、国际象棋等多种棋具。无论你是初学者还是资深棋手，都能在这里找到棋逢对手的乐趣。</p>
+                        </div>
+                    </div>
+                    <!-- 活动项 2 -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                        <div class="p-6 flex justify-between items-center cursor-pointer event-toggle">
+                            <div>
+                                <h4 class="text-xl font-bold text-blue-800">指导棋活动</h4>
+                                <p class="text-gray-500">每月最后一个周五晚上 19:00 - 21:00 @ 图书馆研讨室</p>
+                            </div>
+                            <svg class="h-6 w-6 transition-transform transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
+                        </div>
+                        <div class="event-details hidden px-6 pb-6 border-t border-gray-200">
+                            <p class="mt-4 text-gray-700">俱乐部将邀请校内外知名棋手，为会员提供1对多的指导棋，进行复盘讲解，帮助大家快速提升棋力。活动名额有限，需在俱乐部群内提前报名。</p>
+                        </div>
+                    </div>
+                    <!-- 活动项 3 -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                        <div class="p-6 flex justify-between items-center cursor-pointer event-toggle">
+                            <div>
+                                <h4 class="text-xl font-bold text-blue-800">“弈峰杯”校园棋王争霸赛</h4>
+                                <p class="text-gray-500">每年11月 @ 具体地点待通知</p>
+                            </div>
+                            <svg class="h-6 w-6 transition-transform transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
+                        </div>
+                        <div class="event-details hidden px-6 pb-6 border-t border-gray-200">
+                            <p class="mt-4 text-gray-700">这是俱乐部年度最盛大的赛事，面向全校师生，分为象棋组、围棋组和国际象棋组。比赛将决出本年度的校园棋王，并有丰厚奖品！敬请期待后续通知。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 联系我们 Section (默认隐藏) -->
+        <section id="contact" class="content-section hidden py-8">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center mb-12">联系我们 & 加入我们</h2>
+                <div class="bg-white p-8 rounded-xl shadow-lg max-w-4xl mx-auto text-center">
+                    <p class="text-lg text-gray-700 mb-8">我们热烈欢迎所有对棋牌充满热情的师生加入！您可以通过以下方式联系我们：</p>
+                    <div class="space-y-8">
+                        <div>
+                            <h4 class="text-xl font-semibold text-blue-800">官方QQ交流群</h4>
+                            <p class="text-2xl font-mono text-gray-800 mt-2">123456789</p>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-semibold text-blue-800">微信公众号</h4>
+                            <img src="https://placehold.co/200x200/e2e8f0/333333?text=公众号二维码" alt="微信公众号二维码" class="mx-auto mt-2 rounded-lg" onerror="this.onerror=null;this.src='https://placehold.co/200x200/e2e8f0/333333?text=QR+Code';">
+                            <p class="text-gray-600 mt-1">扫码关注获取最新资讯</p>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-semibold text-blue-800">电子邮箱</h4>
+                            <p class="text-lg text-gray-800 mt-2">yifeng_club@nudt.edu.cn</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 俱乐部会员 Section (默认隐藏) -->
+        <section id="members" class="content-section hidden py-8">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center mb-12">俱乐部会员</h2>
+                
+                <!-- 指导老师和骨干成员 -->
+                <div class="mb-12">
+                    <h3 class="text-2xl font-bold mb-8 text-center">核心团队</h3>
+                    <div class="flex flex-col items-center space-y-12">
+
+                        <!-- 指导团队 -->
+                        <div class="w-full">
+                            <h4 class="text-xl font-semibold text-center mb-6 text-gray-700">指导团队</h4>
+                            <div class="flex flex-wrap justify-center gap-8">
+                                <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 text-center bg-white p-6 rounded-xl shadow-lg">
+                                    <img class="w-24 h-24 rounded-full mx-auto mb-4" src="https://placehold.co/100x100/a0aec0/ffffff?text=于" alt="指导老师头像" onerror="this.onerror=null;this.src='https://placehold.co/100x100/a0aec0/ffffff?text=师';">
+                                    <h5 class="text-lg font-semibold">于雷</h5>
+                                    <p class="text-blue-700 font-medium text-sm">指导老师</p>
+                                    <p class="text-xs text-gray-500 mt-2">电子科学学院讲师，负责俱乐部发展指导。</p>
+                                </div>
+                                <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 text-center bg-white p-6 rounded-xl shadow-lg">
+                                    <img class="w-24 h-24 rounded-full mx-auto mb-4" src="https://placehold.co/100x100/a0aec0/ffffff?text=李" alt="指导老师头像" onerror="this.onerror=null;this.src='https://placehold.co/100x100/a0aec0/ffffff?text=师';">
+                                    <h5 class="text-lg font-semibold">李教授</h5>
+                                    <p class="text-blue-700 font-medium text-sm">指导老师</p>
+                                    <p class="text-xs text-gray-500 mt-2">理学院资深教授，围棋业余6段，提供专业指导。</p>
+                                </div>
+                                <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 text-center bg-white p-6 rounded-xl shadow-lg">
+                                    <img class="w-24 h-24 rounded-full mx-auto mb-4" src="https://placehold.co/100x100/a0aec0/ffffff?text=王" alt="教练员头像" onerror="this.onerror=null;this.src='https://placehold.co/100x100/a0aec0/ffffff?text=教';">
+                                    <h5 class="text-lg font-semibold">王教练</h5>
+                                    <p class="text-blue-700 font-medium text-sm">教练员</p>
+                                    <p class="text-xs text-gray-500 mt-2">国际象棋国家大师，专注于开局理论与实战策略研究。</p>
+                                </div>
+                                <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 text-center bg-white p-6 rounded-xl shadow-lg">
+                                    <img class="w-24 h-24 rounded-full mx-auto mb-4" src="https://placehold.co/100x100/a0aec0/ffffff?text=赵" alt="教练员头像" onerror="this.onerror=null;this.src='https://placehold.co/100x100/a0aec0/ffffff?text=教';">
+                                    <h5 class="text-lg font-semibold">赵教练</h5>
+                                    <p class="text-blue-700 font-medium text-sm">教练员</p>
+                                    <p class="text-xs text-gray-500 mt-2">省队退役象棋棋手，多次荣获全国大赛奖项。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 管理团队 -->
+                        <div class="w-full">
+                            <h4 class="text-xl font-semibold text-center mb-6 text-gray-700">管理团队</h4>
+                            <div class="flex flex-wrap justify-center gap-8">
+                                <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 text-center bg-white p-6 rounded-xl shadow-lg">
+                                    <img class="w-24 h-24 rounded-full mx-auto mb-4" src="https://placehold.co/100x100/a0aec0/ffffff?text=张" alt="主任头像" onerror="this.onerror=null;this.src='https://placehold.co/100x100/a0aec0/ffffff?text=张';">
+                                    <h5 class="text-lg font-semibold">张一娄</h5>
+                                    <p class="text-blue-700 font-medium text-sm">俱乐部主任</p>
+                                    <p class="text-xs text-gray-500 mt-2">统筹俱乐部全面工作，致力于打造一流的校园棋牌文化平台。</p>
+                                </div>
+                                <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 text-center bg-white p-6 rounded-xl shadow-lg">
+                                    <img class="w-24 h-24 rounded-full mx-auto mb-4" src="https://placehold.co/100x100/a0aec0/ffffff?text=纪" alt="副主任头像" onerror="this.onerror=null;this.src='https://placehold.co/100x100/a0aec0/ffffff?text=纪';">
+                                    <h5 class="text-lg font-semibold">纪大威</h5>
+                                    <p class="text-blue-700 font-medium text-sm">副主任</p>
+                                    <p class="text-xs text-gray-500 mt-2">协助主任处理日常事务，分管象棋与国际象棋分部。</p>
+                                </div>
+                                <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 text-center bg-white p-6 rounded-xl shadow-lg">
+                                    <img class="w-24 h-24 rounded-full mx-auto mb-4" src="https://placehold.co/100x100/a0aec0/ffffff?text=汪" alt="副主任头像" onerror="this.onerror=null;this.src='https://placehold.co/100x100/a0aec0/ffffff?text=汪';">
+                                    <h5 class="text-lg font-semibold">汪天雄</h5>
+                                    <p class="text-blue-700 font-medium text-sm">副主任</p>
+                                    <p class="text-xs text-gray-500 mt-2">协助主任处理日常事务，分管围棋分部与对外交流。</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 执行团队 -->
+                        <div class="w-full">
+                            <h4 class="text-xl font-semibold text-center mb-6 text-gray-700">执行团队</h4>
+                            <div class="flex flex-wrap justify-center gap-8">
+                                <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 text-center bg-white p-6 rounded-xl shadow-lg">
+                                    <img class="w-24 h-24 rounded-full mx-auto mb-4" src="https://placehold.co/100x100/a0aec0/ffffff?text=钱" alt="部长头像" onerror="this.onerror=null;this.src='https://placehold.co/100x100/a0aec0/ffffff?text=钱';">
+                                    <h5 class="text-lg font-semibold">钱七</h5>
+                                    <p class="text-blue-700 font-medium text-sm">综合保障部部长</p>
+                                    <p class="text-xs text-gray-500 mt-2">负责俱乐部活动场地、物资与财务管理，是团队可靠的后盾。</p>
+                                </div>
+                                <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 text-center bg-white p-6 rounded-xl shadow-lg">
+                                    <img class="w-24 h-24 rounded-full mx-auto mb-4" src="https://placehold.co/100x100/a0aec0/ffffff?text=冷" alt="部长头像" onerror="this.onerror=null;this.src='https://placehold.co/100x100/a0aec0/ffffff?text=冷';">
+                                    <h5 class="text-lg font-semibold">冷昶</h5>
+                                    <p class="text-blue-700 font-medium text-sm">文化宣传部部长</p>
+                                    <p class="text-xs text-gray-500 mt-2">负责俱乐部线上线下宣传工作，运营官方公众号与视频号。</p>
+                                </div>
+                                <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 text-center bg-white p-6 rounded-xl shadow-lg">
+                                    <img class="w-24 h-24 rounded-full mx-auto mb-4" src="https://placehold.co/100x100/a0aec0/ffffff?text=刘" alt="部长头像" onerror="this.onerror=null;this.src='https://placehold.co/100x100/a0aec0/ffffff?text=刘';">
+                                    <h5 class="text-lg font-semibold">刘仲尧</h5>
+                                    <p class="text-blue-700 font-medium text-sm">组织策划部部长</p>
+                                    <p class="text-xs text-gray-500 mt-2">策划“弈峰杯”等品牌赛事，组织各类趣味棋牌活动。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 会员列表 -->
+                <div>
+                    <h3 class="text-2xl font-bold mb-6 text-center mt-16">会员风采</h3>
+                    <div class="bg-white rounded-xl shadow-lg overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="p-4 font-semibold">姓名</th>
+                                    <th class="p-4 font-semibold">学院</th>
+                                    <th class="p-4 font-semibold">擅长项目</th>
+                                    <th class="p-4 font-semibold">简介</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="p-4">赵大</td>
+                                    <td class="p-4">电子科学学院</td>
+                                    <td class="p-4">象棋</td>
+                                    <td class="p-4 text-sm text-gray-600">布局犀利，中盘稳健</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4">钱二</td>
+                                    <td class="p-4">空天科学学院</td>
+                                    <td class="p-4">围棋</td>
+                                    <td class="p-4 text-sm text-gray-600">喜爱实地，官子细腻</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4">孙三</td>
+                                    <td class="p-4">理学院</td>
+                                    <td class="p-4">国际象棋</td>
+                                    <td class="p-4 text-sm text-gray-600">擅长西西里防御</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4">周四</td>
+                                    <td class="p-4">材料科学学院</td>
+                                    <td class="p-4">象棋</td>
+                                    <td class="p-4 text-sm text-gray-600">棋风刚猛，善于对攻</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
 
     <!-- 页脚 -->
-    <footer class="bg-gray-800 text-white mt-16">
+    <footer class="bg-gray-800 text-white">
         <div class="container mx-auto px-6 py-4 text-center">
             <p>&copy; 2025 国防科技大学 “弈峰”棋牌俱乐部. All Rights Reserved.</p>
             <p class="text-sm text-gray-400 mt-1">本网站为示例页面，内容仅供参考。</p>
@@ -281,32 +411,144 @@
     </footer>
 
     <script>
-        // 移动端菜单切换
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 页面导航逻辑 ---
+            const navLinks = document.querySelectorAll('.nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
 
-        // 点击移动端菜单链接后关闭菜单
-        const mobileLinks = mobileMenu.querySelectorAll('a');
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
+            function switchTab(targetId) {
+                // 隐藏所有内容板块
+                contentSections.forEach(section => {
+                    section.classList.add('hidden');
+                });
+
+                // 显示目标板块
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    targetSection.classList.remove('hidden');
+                }
+
+                // 更新导航链接的激活状态
+                navLinks.forEach(link => {
+                    if (link.getAttribute('href') === '#' + targetId) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+                 // 切换页面后滚动到顶部
+                window.scrollTo(0, 0);
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault(); // 阻止链接的默认跳转行为
+                    const targetId = link.getAttribute('href').substring(1); // 从 href 中获取 id
+                    switchTab(targetId);
+
+                    // 如果是移动端菜单，点击后关闭
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
             });
-        });
 
-        // 活动日历详情展开/收起
-        const eventToggles = document.querySelectorAll('.event-toggle');
-        eventToggles.forEach(toggle => {
-            toggle.addEventListener('click', () => {
-                const details = toggle.nextElementSibling;
-                const icon = toggle.querySelector('svg');
-                details.classList.toggle('hidden');
-                icon.classList.toggle('rotate-180');
+            // 初始加载时，显示首页
+            switchTab('home');
+
+            // --- 首页按钮事件监听 ---
+            const joinNowBtn = document.getElementById('join-now-btn');
+            const viewActivitiesBtn = document.getElementById('view-activities-btn');
+
+            if(joinNowBtn) {
+                joinNowBtn.addEventListener('click', () => {
+                    switchTab('contact');
+                });
+            }
+            
+            if(viewActivitiesBtn) {
+                viewActivitiesBtn.addEventListener('click', () => {
+                    switchTab('calendar');
+                });
+            }
+            
+            // --- 首页背景幻灯片逻辑 ---
+            const heroSection = document.getElementById('hero-section');
+            const prevBtn = document.getElementById('prev-slide-btn');
+            const nextBtn = document.getElementById('next-slide-btn');
+            
+            // 在这里替换或添加您自己的图片链接
+            const images = [
+                'https://i.postimg.cc/vmLMCdY1/bike.png', // 您提供的图片
+                'https://images.pexels.com/photos/260024/pexels-photo-260024.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', // 象棋
+                'https://images.pexels.com/photos/112854/pexels-photo-112854.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'  // 围棋
+            ];
+            let currentImageIndex = 0;
+            let slideInterval;
+
+            function updateBackgroundImage() {
+                if(heroSection) {
+                    heroSection.style.backgroundImage = `url('${images[currentImageIndex]}')`;
+                }
+            }
+
+            function nextImage() {
+                currentImageIndex = (currentImageIndex + 1) % images.length;
+                updateBackgroundImage();
+            }
+
+            function prevImage() {
+                currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+                updateBackgroundImage();
+            }
+
+            function startSlideshow() {
+                clearInterval(slideInterval); // 清除旧的计时器
+                slideInterval = setInterval(nextImage, 5000); // 设置新的计时器
+            }
+
+            if(prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    prevImage();
+                    startSlideshow(); // 点击后重置自动播放计时器
+                });
+            }
+
+            if(nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    nextImage();
+                    startSlideshow(); // 点击后重置自动播放计时器
+                });
+            }
+
+            // 初始加载
+            updateBackgroundImage();
+            startSlideshow();
+
+
+            // --- 其他脚本 ---
+            // 移动端菜单按钮切换
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // 活动日历详情展开/收起
+            const eventToggles = document.querySelectorAll('.event-toggle');
+            eventToggles.forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const details = toggle.nextElementSibling;
+                    const icon = toggle.querySelector('svg');
+                    details.classList.toggle('hidden');
+                    icon.classList.toggle('rotate-180');
+                });
             });
         });
     </script>
 
 </body>
 </html>
+"
+
